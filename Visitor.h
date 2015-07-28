@@ -5,11 +5,11 @@
 
 //Visitor interface inherited by each search type.
 template<class obj>
-class NodeVistorInterface{
+class Visitor{
 
 public:
 	//destructor
-	virtual ~NodeVistorInterface() {}
+	virtual ~Visitor() {}
 
 	//pure virtual
 	virtual void visitEdge(Edge<obj>& node) = 0;

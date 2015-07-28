@@ -1,6 +1,6 @@
 #pragma once
 
-#include "NodeVisitorInterface.h"
+#include "Visitor.h"
 #include <list>
 #include <stack>
 #include <iostream>
@@ -13,7 +13,7 @@
 #include "Graph.h"
 
 template <class obj>
-class DFS : public NodeVistorInterface<obj> {
+class DFS : public Visitor<obj> {
 
 	std::set<Vertex<obj>*> visited;
 	std::list<Vertex<obj>*> solution;

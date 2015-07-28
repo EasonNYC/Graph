@@ -5,15 +5,15 @@
 
 #include "Vertex.h"
 
-//Graph Class holds a collection of vertecies. 
+//Graph Class holds a collection of vertecies. todo: vertex factory 
 template <class obj>
 class Graph {
 private:
 
-	std::list<Vertex<obj>*> vertices;
+	std::list<Vertex<obj>*> vertices; //todo: change to set
 
 public:
-	//constructor and destructor (place holders)
+	//constructor and destructor (todo: finish these)
 	Graph() = default;
 	~Graph() = default;
 	
