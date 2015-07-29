@@ -17,7 +17,8 @@ class DFS : public Visitor<obj>
 {
 	std::set<Vertex<obj>*> visited;
 	std::list<Vertex<obj>*> solution;
-	std::stack<Vertex<obj>*> stack;
+	std::stack<Vertex<obj>*> stack; //make obsolete
+	std::deque<Vertex<obj>*> to_explore;
 	std::map<Vertex<obj>*, Vertex<obj>*> parent_list; //used for solution path backtracking
 
 
@@ -135,11 +136,12 @@ public:
 				}
 
 
-				//add all vertecies we've never seen before to the stack
+				//for each neighbor add all vertecies we've never seen before to the stack
 				for (Edge<obj>& r : ver->neighbors)
 				{
-					Vertex<obj>* temp = r.destination;
-					if (this->isVisited( *temp ) == false)
+
+					Vertex<obj>* temp = r.destination; //get vertex
+					if (this->isVisited( *temp ) == false) // or is in stack already
 					{
 						std::cout << "adding " << r.destination->payload << " to the stack" << std::endl;
 						stack.push( temp );
