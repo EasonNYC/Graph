@@ -4,12 +4,10 @@
 #include <list>
 
 //Fwd Declarations
-template <class obj>
-class Edge;
-template <class obj>
-class Visitor;
+template <class obj> class Edge;
+template <class obj> class Visitor;
 
-//The Vertex Class holds the payload/object to be searched. Is connected to other verticies by a weighted edge.
+//The Vertex Class holds the payload/object to be searched. Is connected to other verteces by a weighted edge.
 template <class obj>
 class Vertex
 {

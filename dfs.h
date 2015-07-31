@@ -16,14 +16,15 @@ template <class obj>
 class DFS : public Visitor<obj>
 {
 	std::set<Vertex<obj>*> visited;
+	std::deque<Vertex<obj>*> explore;
+	
 	std::list<Vertex<obj>*> solution;
-	std::stack<Vertex<obj>*> stack; //make obsolete
-	std::deque<Vertex<obj>*> to_explore;
-	std::map<Vertex<obj>*, Vertex<obj>*> parent_list; //used for solution path backtracking
+	std::map<Vertex<obj>*, Vertex<obj>*> parent_list; //temporarily used for solution backtracking
 
 
 	obj start; //root 
 	obj goal;
+
 	int nodesVisted;
 	int depth;
 
@@ -39,7 +40,7 @@ public:
 	}
 
 
-	//forwards to Vertex version of visit
+	//forwards to visit
 	virtual void visitEdge( Edge<obj>& edge ) override
 	{
 		return visit( edge.destination );
@@ -58,20 +59,22 @@ public:
 	};
 
 
-	//returns a bool of whether a node has been visited in the search
-	virtual bool isVisited( Vertex<obj>& node )
+	//returns true if a node has been visited in the search
+	virtual bool is_in_Visited( Vertex<obj>& node )
 	{
 		//return true if already in set of visited nodes
-		if (visited.find( &node ) != visited.end())
-		{
-			return true;
-		}
+		return visited.find(&node) != visited.end();
+		
+	}
 
-		return false;
+	//returns True if the vertex is in the explore deque.
+	bool is_in_Explore( Vertex<obj>& node )
+	{
+		return std::find(explore.begin(), explore.end(), &node) != explore.end();
 	}
 
 
-	//work that should happen upon visiting a node
+	//work that should happen upon visiting a node (generate neighbors, update node etc.)
 	virtual void processNode( Vertex<obj>& node )
 	{
 		//check for goal
@@ -97,29 +100,28 @@ public:
 
 		//push the root node to the top of the stack
 		Vertex<obj>* s = G.getVertex( start );
-		stack.push( s );
+		explore.push_front( s );
 
-		while (!stack.empty())
+		while (!explore.empty())
 		{
 			//pop the stack
-			Vertex<obj>* ver = stack.top();
+			Vertex<obj>* ver = explore.front();
 			std::cout << "removing " << ver->payload << " from the stack" << std::endl;
-			stack.pop();
+			explore.pop_front();
 
-			//if we've never seen this vertex before
-			if (this->isVisited( *ver ) == false)
+			//if we've never seen this vertex before, visit it
+			if (is_in_Visited( *ver ) == false) 
 			{
-				//this->visitNode( *ver ); //add to visited list
+				//add to visited list
 				ver->accept( *this );
 
-				//check if it's the goal
+				//if it's the goal (move to process node?)
 				if (ver->payload == goal)
 				{
 					std::cout << "goal found: " << ver->payload << std::endl;
 
+					//add current path to the the solution list (todo: make this a function)
 					Vertex<obj>* startnode = G.getVertex( start );
-
-					//add current path to the the solution list (todo: make private function)
 					solution.push_front( ver );
 					while (solution.front() != startnode)
 					{
@@ -128,29 +130,29 @@ public:
 					}
 
 					//todo: mark bool solution found
-
-					//remove this later
-					printSolution();
-
-					return;
+					break; 
+					
 				}
 
 
-				//for each neighbor add all vertecies we've never seen before to the stack
+				//for each neighbor push all vertecies we've never seen before to the front of the deque (todo: make this a function)
 				for (Edge<obj>& r : ver->neighbors)
 				{
 
-					Vertex<obj>* temp = r.destination; //get vertex
-					if (this->isVisited( *temp ) == false) // or is in stack already
+					Vertex<obj>* temp = r.destination; //get neighbor
+					if ( ((is_in_Visited( *temp )) || (is_in_Explore( *temp ))) == false) //check if is_in_explore should be here
 					{
-						std::cout << "adding " << r.destination->payload << " to the stack" << std::endl;
-						stack.push( temp );
+						std::cout << "adding " << r.destination->payload << " to explore " << is_in_Visited(*temp) << " " <<  is_in_Explore(*temp) << std::endl;
+						explore.push_front( temp );
 						parent_list[r.destination] = ver;
 					}
 				}
 			}
 		}
-		//return
+		//todo: add timeout check
+		//print solution whether it's found or not
+		printSolution();
+		//return false?
 	}
 
 	//returns a pointer to the first element of the solution if it exists.
@@ -166,7 +168,7 @@ public:
 		std::cout << std::endl << "------------------------" << std::endl << std::endl;
 
 		//check for solution
-		if (solution.front() == nullptr)
+		if (solution.size() == 0)
 		{
 			std::cout << "no solution found." << std::endl;
 			return;

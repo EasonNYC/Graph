@@ -20,7 +20,7 @@ bool DFS::visitNode( Vertex& node ) {
 
 }
 
-bool DFS::isVisited( Vertex& node ) {
+bool DFS::is_in_Visited( Vertex& node ) {
 
 	//return true if already in list of visited nodes
 	for ( auto &v : visited ) {
@@ -67,7 +67,7 @@ void DFS::search( ) {
 		stack.pop();
 		
 		//if we've never seen it before
-		if ( this->isVisited( *ver ) == false ) { 
+		if ( this->is_in_Visited( *ver ) == false ) { 
 			
 			
 			//visit the node (calls process node, then the vertex acknowledges
@@ -97,7 +97,7 @@ void DFS::search( ) {
 			for ( Edge& r : ver->neighbors ) {
 
 				Vertex* temp = r.destination;
-				if ( this->isVisited( *temp ) == false ) {
+				if ( this->is_in_Visited( *temp ) == false ) {
 					std::cout << "adding " << r.destination->name << " to the stack" << std::endl;
 					stack.push( temp );
 					parent_list[r.destination] = ver;

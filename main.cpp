@@ -44,7 +44,7 @@ int main(){
 	//mygraph.AddEdge(mygraph.getVertex("second"), mygraph.AddVertex("deadend"), 12);
 
 	//conduct DFS
-	DFS<std::string> DFS(mygraph,std::string("Arad"),std::string("Buchares"));
+	DFS<std::string> DFS(mygraph,std::string("Arad"),std::string("Bucharest"));
 	
 	//DFS.search();
 
