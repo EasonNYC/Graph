@@ -138,7 +138,7 @@ public:
 	}
 
 
-	//returns a pointer to the first element of the solution if it exists.
+	//returns a list of the solution path if it exists.
 	std::list<Vertex<obj>*> getSolution() const
 	{
 		return solution;
