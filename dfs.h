@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Visitor.h"
 #include <list>
 #include <stack>
 #include <iostream>
@@ -8,9 +7,40 @@
 #include <set>
 #include <string>
 
+#include <ctime>
 
+
+#include "Visitor.h"
 #include "Edge.h"
 #include "Graph.h"
+
+
+// simple timer class. Starts as soon as it's instanced. (todo: move to own header later)
+class Timer {
+
+private:
+	double start;
+
+public:
+	//constructor
+	Timer() 
+		: start(std::clock()) 
+	{}
+
+	//returns elapsed time since timer object was instantiated
+	double elapsed()
+	{
+		return (std::clock() - start) / CLOCKS_PER_SEC;
+	}
+
+	//resets the timer
+	void reset()
+	{
+		start = std::clock();
+	}
+
+};
+
 
 template <class obj>
 class DFS : public Visitor<obj>
@@ -29,6 +59,7 @@ class DFS : public Visitor<obj>
 	int nodesVisted;
 	int depth;
 	bool goalFound;
+	bool timedOut;
 
 public:
 
@@ -47,7 +78,7 @@ public:
 	}
 
 
-	//used for visitor pattern
+	//used in visitor pattern
 	virtual void visit( Vertex<obj>* node ) override
 	{
 		//mark the node as visited
@@ -62,7 +93,8 @@ public:
 	//work that should happen upon visiting a node (generate neighbors, check for goal, update node etc.)
 	virtual void processNode( Vertex<obj>& ver )
 	{
-		//check for goal (todo: change to comparator?)
+		
+		//check for goal (todo: change to functor)
 		if (ver.payload == goal)
 		{
 			//let us know we have found a goal
@@ -78,9 +110,10 @@ public:
 				depth++;
 			}
 		}
+		//else push any neighbors we've never seen before onto the explore deque
 		else
 		{
-			//else push any neighbors we've never seen before onto the explore deque
+			
 			for (Edge<obj>& edge : ver.neighbors)
 			{
 				Vertex<obj>* neighbor_vertex = edge.destination;
@@ -111,19 +144,26 @@ public:
 
 
 	//performs depth first search on the associated graph
-	void search()
+	void search( double timeout = 20 /*secs*/ )
 	{
+		
 		//reset stats
 		depth = 0;
 		nodesVisted = 0;
 		goalFound = false;
+		timedOut = false;
 
+		std::cout << "Searching for " << goal << ". Beginning search at " << start <<  std::endl;
+		//start the timer (used to detect timeout).
+		Timer dfsTimer;
+		
 		//push the root node of the search to the the stack
 		Vertex<obj>* root = G.getVertex( start );
 		explore.push_front( root );
 
-		while ((explore.empty() || goalFound) == false)
+		while ((explore.empty() || goalFound || timedOut) == false)
 		{
+						
 			//pop the stack
 			Vertex<obj>* ver = explore.front();
 			explore.pop_front();
@@ -132,9 +172,18 @@ public:
 			//visit vertex, process it (check for goal, add neighbors to explore, etc.)
 			if (!is_in_Visited( *ver ))
 				ver->accept( *this );
-		}
 
+			//check for timout
+			if (dfsTimer.elapsed() > timeout)
+				timedOut = true;
+				
+			
+		}
+	
+		//Finally, print the solution and total search time.
 		printSolution();
+		std::cout << "total search time: " << dfsTimer.elapsed() << std::endl;
+
 	}
 
 
@@ -150,6 +199,12 @@ public:
 	{
 		std::cout << std::endl << "------------------------" << std::endl << std::endl;
 
+		//check for timeout
+		if (timedOut)
+		{
+			std::cout << "search timed out. ";
+		}
+
 		//check for solution
 		if (solution.size() == 0)
 		{
@@ -157,9 +212,12 @@ public:
 			return;
 		}
 
-		//print solution info (TODO: add if solution found or not)
+		
+
+		//print solution info (TODO: add time here)
 		std::cout << "nodes visited: " << nodesVisted << std::endl;
 		std::cout << "max depth: " << depth << std::endl << std::endl;
+		
 		std::cout << "solution: " << std::endl;
 
 		//print path to solution

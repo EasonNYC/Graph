@@ -16,14 +16,14 @@ public:
 	//public members
 	obj payload;
 	bool visited;
-	std::list<Edge<obj>> neighbors; //make private?
+	std::list<Edge<obj>> neighbors; 
 
 	//Constructor
 	Vertex( const obj& payload )
 		: payload( payload ), visited( false )
 	{ }
 
-	//destructor
+	//destructor (destroy edges too?)
 	virtual ~Vertex()
 	{ }
 
@@ -34,9 +34,7 @@ public:
 		for (auto& v : neighbors)
 		{
 			if (v.destination->payload == payload)
-			{
 				return;
-			}
 		}
 		//else add new neighbor
 		neighbors.push_back( Edge<obj>( destination, weight ) );
@@ -47,7 +45,6 @@ public:
 	{
 		//call visitor to visit this node
 		v.visit( this );
-
 		
 	}
 };
