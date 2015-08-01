@@ -45,11 +45,9 @@ public:
 	// what the vertex should do (if anything) if it is being visited
 	virtual void accept( Visitor<obj>& v )
 	{
-		//v.visitNode(static_cast<derived&>(this));
+		//call visitor to visit this node
 		v.visit( this );
 
-		//take this stuff out later 
-		visited = true;
-		std::cout << payload << " is being visited" << std::endl;
+		
 	}
 };
