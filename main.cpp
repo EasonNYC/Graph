@@ -34,6 +34,7 @@ int main(){
 	mygraph.twowayConnect("Vaslul", "Lasl", 92);
 	mygraph.twowayConnect("Lasl", "Neamt", 87);
 
+	//directed
 	//mygraph.AddEdge(mygraph.getVertex("second"), mygraph.AddVertex("third"), 12);
 	//mygraph.AddEdge(mygraph.getVertex("second"), mygraph.AddVertex("fourth"), 20);
 	//mygraph.AddEdge(mygraph.getVertex("third"), mygraph.AddVertex("destination"), 5); //dest created for first time
@@ -44,7 +45,7 @@ int main(){
 	//mygraph.AddEdge(mygraph.getVertex("second"), mygraph.AddVertex("deadend"), 12);
 
 	//conduct DFS
-	DFS<std::string> DFS(mygraph,std::string("Arad"),std::string("Bucharest"));
+	DFS<std::string> DFS( mygraph, std::string("Arad"), std::string("Bucharest" ) );
 	
 	//DFS.search();
 

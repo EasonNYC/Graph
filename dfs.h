@@ -22,7 +22,7 @@ class DFS : public Visitor<obj>
 	std::deque<Vertex<obj>*> explore;
 
 	std::list<Vertex<obj>*> solution;
-	std::map<Vertex<obj>*, Vertex<obj>*> parent_list; //temporarily used for solution backtracking
+	std::map<Vertex<obj>*, Vertex<obj>*> parent_list; 
 
 	Graph<obj> G;
 
@@ -40,6 +40,7 @@ public:
 	DFS( Graph<obj>& g, obj& start, obj& goal )
 		: G( g ), start( start ), goal( goal ), goalFound( false )
 	{
+		//auto-run search algo
 		this->search();
 	}
 
@@ -92,7 +93,7 @@ public:
 				Vertex<obj>* neighbor_vertex = edge.destination;
 				if (((is_in_Visited( *neighbor_vertex )) || (is_in_Explore( *neighbor_vertex ))) == false)
 				{
-					std::cout << "adding " << edge.destination->payload << " to explore " << std::endl;
+					//std::cout << "adding " << edge.destination->payload << " to explore " << std::endl;
 					explore.push_front( neighbor_vertex );
 					parent_list[edge.destination] = &ver; //track parents
 				}
@@ -126,7 +127,7 @@ public:
 		goalFound = false;
 		timedOut = false;
 
-		std::cout << "Searching for " << goal << ". Beginning search at " << start <<  std::endl;
+		std::cout << "Searching for " << goal << "... Starting at " << start <<  std::endl;
 		//start the timer (used to detect timeout).
 		Timer dfsTimer;
 		
@@ -140,7 +141,7 @@ public:
 			//pop the stack
 			Vertex<obj>* ver = explore.front();
 			explore.pop_front();
-			std::cout << "removed " << ver->payload << " from the stack" << std::endl;
+			//std::cout << "removed " << ver->payload << " from the stack" << std::endl;
 
 			//visit vertex, process it (check for goal, add neighbors to explore, etc.)
 			if (!is_in_Visited( *ver ))
@@ -178,19 +179,13 @@ public:
 			std::cout << "search timed out. ";
 		}
 
-		//check for solution
+		//check for solution, return if there is none.
 		if (solution.size() == 0)
 		{
 			std::cout << "no solution found." << std::endl;
 			return;
 		}
-
-		
-
-		//print solution info (TODO: add time here)
-		std::cout << "nodes visited: " << nodesVisted << std::endl;
-		std::cout << "max depth: " << depth << std::endl << std::endl;
-		
+				
 		std::cout << "solution: " << std::endl;
 
 		//print path to solution
@@ -212,6 +207,15 @@ public:
 			//add text arrows
 			std::cout << std::endl;
 			std::cout << "    |" << std::endl << "    V" << std::endl;
-		}
+		} 
+
+
+		//print solution info (TODO: add time here)
+		std::cout << "---------------" << std::endl;
+		std::cout << "nodes visited: " << nodesVisted << std::endl;
+		std::cout << "max depth: " << depth << std::endl;
+
+
 	}
+	
 };
